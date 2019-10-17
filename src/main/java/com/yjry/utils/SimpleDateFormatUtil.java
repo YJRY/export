@@ -1,4 +1,4 @@
-package com.yjry.commUtils;
+package com.yjry.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,7 +13,7 @@ import java.util.Date;
 public class SimpleDateFormatUtil {
     private volatile static SimpleDateFormat simpleDateFormat;
 
-    public static SimpleDateFormat getDefaultInstance() {
+    private static SimpleDateFormat getDefaultInstance() {
         if (simpleDateFormat == null) {
             synchronized (SimpleDateFormatUtil.class) {
                 if (simpleDateFormat == null) {

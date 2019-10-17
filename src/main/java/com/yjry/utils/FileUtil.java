@@ -1,22 +1,28 @@
-package com.yjry.commUtils;
+package com.yjry.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.*;
+import com.yjry.bean.ExportBean;
 import com.yjry.bean.exception.GlobalException;
+import com.yjry.common.GlobalProperty;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -29,15 +35,47 @@ import java.util.regex.Pattern;
  */
 public class FileUtil {
 
+    public static String commonCSVExport(ExportBean exportBean, HttpServletRequest request, Object daoBean, String loginName, String downloadFilePath, String mappingPath) throws IllegalAccessException, InstantiationException {
+        exportBean.setFileName(exportBean.getFileName() + "_"
+                + SimpleDateFormatUtil.getInstanceByValue(GlobalProperty.DATETIME_NON_JOINER).format(new Date()) + "_" + loginName);
+        if (daoBean != null) {
+            for (Method method : daoBean.getClass().getDeclaredMethods()) {
+                if (method.getName().equals(exportBean.getMethodName())) {
+                    for (Parameter parameter : method.getParameters()) {
+                        Class clazz = parameter.getType();
+                        Object object = clazz.newInstance();
+                        JSONObject conditions = exportBean.getConditions();
+                        if (conditions != null && conditions.size() > 0) {
+                            conditions.forEach((k, v) -> {
+                                try {
+                                    Field field = clazz.getDeclaredField(k);
+                                    if (field != null) {
+                                        field.setAccessible(true);
+                                        field.set(object, v);
+                                    }
+                                } catch (NoSuchFieldException | IllegalAccessException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                        Object result = ReflectionUtils.invokeMethod(method, daoBean, clazz.cast(object));
+                        List list = (List) result;
+                        return exportCSV(list, exportBean.getColumnNames(), request, exportBean.getFileName() + ".csv", downloadFilePath, mappingPath);
+                    }
+                }
+            }
+        }
+        return exportCSV(null, null, request, exportBean.getFileName() + ".csv", downloadFilePath, mappingPath);
+    }
+
     /**
      * 导出CSV文件
      * @author xuqi
      * @date 2019-07-31 10:35:35
      */
-    public static String exportCSV(List list, List<Map<String, String>> columnNames, HttpServletRequest request, String fileName, String downloadFilePath) {
+    private static String exportCSV(List list, List<Map<String, String>> columnNames, HttpServletRequest request, String fileName, String downloadFilePath, String mappingPath) {
         BufferedWriter out = null;
         String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String downloadPath = "/downloadFile/";
         try {
             File filePath = new File(downloadFilePath);
             if (!filePath.exists()) {
@@ -99,7 +137,7 @@ public class FileUtil {
                 e.printStackTrace();
             }
         }
-        return path + downloadPath + fileName;
+        return path + mappingPath + fileName;
     }
 
     /**
@@ -224,7 +262,7 @@ public class FileUtil {
         String downloadPath = "/downloadFile/";
         String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         StringBuilder sb = new StringBuilder();
-        fileName = sb.append(fileName).append("_").append(SimpleDateFormatUtil.getInstanceByValue("yyyyMMddHHmmss").format(new Date())).append("_").append(loginName).append(".pdf").toString();
+        fileName = sb.append(fileName).append("_").append(SimpleDateFormatUtil.getInstanceByValue(GlobalProperty.DATETIME_NON_JOINER).format(new Date())).append("_").append(loginName).append(".pdf").toString();
         String newFilePath = downloadFilePath + "/" + fileName;
         String templateFilePath = staticTemplateFilePath + "/" + templateFileName;
         try {
@@ -268,7 +306,7 @@ public class FileUtil {
             }
             doc.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         } finally {
             try {
                 if (out != null) {
@@ -278,7 +316,6 @@ public class FileUtil {
                 e.printStackTrace();
             }
         }
-
         return path + downloadPath + fileName;
     }
 

@@ -1,4 +1,4 @@
-package com.yjry.commUtils;
+package com.yjry.utils;
 
 /**
  * snowflake主键生成

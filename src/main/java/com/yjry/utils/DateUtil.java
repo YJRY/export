@@ -1,5 +1,6 @@
-package com.yjry.commUtils;
+package com.yjry.utils;
 
+import com.yjry.common.GlobalProperty;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -13,12 +14,6 @@ import java.util.Date;
  * @date 2019-10-15 16:47:58
  */
 public class DateUtil {
-    private static final String DEFAULT_DATETIME = "yyyy-MM-dd HH:mm:ss";
-    private static final String DEFAULT_DATETIME_NULL = "yyyyMMddHHmmss";
-    private static final String DEFAULT_DATETIME_S = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final String DEFAULT_DATE = "yyyy-MM-dd";
-    private static final String DEFAULT_MONTH = "yyyy-MM";
-
 
     public static Calendar getCalendar() {
         return Calendar.getInstance();
@@ -26,8 +21,8 @@ public class DateUtil {
 
     /**
      * 获取当前时间
-     *
-     * @return
+     * @author xuqi
+     * @date 2019-10-17 11:57:29
      */
     public static Date getCurrentTime() {
         return getCalendar().getTime();
@@ -52,15 +47,15 @@ public class DateUtil {
     }
 
     public static String format(Date date) {
-        return format(date, DEFAULT_DATETIME);
+        return format(date, GlobalProperty.DATETIME);
     }
 
     public static String format(long date) {
-        return format(date, DEFAULT_DATETIME);
+        return format(date, GlobalProperty.DATETIME);
     }
 
     public static String format(Calendar date) {
-        return format(date, DEFAULT_DATETIME);
+        return format(date, GlobalProperty.DATETIME);
     }
 
     public static String format(Date date, String pattern) {
@@ -76,7 +71,7 @@ public class DateUtil {
     }
 
     public static Date parse(String strDate) throws ParseException {
-        return parse(strDate, DEFAULT_DATETIME);
+        return parse(strDate, GlobalProperty.DATETIME);
     }
 
     public static Date parse(String strDate, String pattern) throws ParseException {
