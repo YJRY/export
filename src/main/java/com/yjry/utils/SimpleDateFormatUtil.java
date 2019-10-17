@@ -1,8 +1,6 @@
 package com.yjry.utils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -13,6 +11,11 @@ import java.util.Date;
 public class SimpleDateFormatUtil {
     private volatile static SimpleDateFormat simpleDateFormat;
 
+    /**
+     * 获取SimpleDateFormat单例对象
+     * @author xuqi
+     * @date 2019-10-17 14:12:44
+     */
     private static SimpleDateFormat getDefaultInstance() {
         if (simpleDateFormat == null) {
             synchronized (SimpleDateFormatUtil.class) {
@@ -24,54 +27,31 @@ public class SimpleDateFormatUtil {
         return simpleDateFormat;
     }
 
-    public static SimpleDateFormat getInstanceByValue(String value){
+    /**
+     * 根据传入的字符串获取SimpleDateFormat对象
+     * @author xuqi
+     * @date 2019-10-17 14:12:02
+     */
+    public static SimpleDateFormat getInstanceByValue(String value) {
         return new SimpleDateFormat(value);
     }
 
-    public static String formatDate(Date date) {
+    /**
+     * 将传入的Date对象转换为对应时间串
+     * @author xuqi
+     * @date 2019-10-17 14:10:49
+     */
+    public static String getDateTimeString(Date date) {
         return getDefaultInstance().format(date);
-
     }
 
-    public static Date parse(String strDate) throws ParseException {
-
-        return getDefaultInstance().parse(strDate);
-
-    }
-
-    public static String formatLong(Long l) {
-
+    /**
+     * 将传入的毫秒值转换为对应时间串
+     * @author xuqi
+     * @date 2019-10-17 14:08:28
+     */
+    public static String getDateTimeString(Long l) {
         return getDefaultInstance().format(l);
-
     }
 
-    public static Integer getWeekDay(String datetime) {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date parse = f.parse(datetime);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parse);
-            switch (calendar.get(Calendar.DAY_OF_WEEK)) {
-                case Calendar.MONDAY:
-                    return 1;
-                case Calendar.TUESDAY:
-                    return 2;
-                case Calendar.WEDNESDAY:
-                    return 3;
-                case Calendar.THURSDAY:
-                    return 4;
-                case Calendar.FRIDAY:
-                    return 5;
-                case Calendar.SATURDAY:
-                    return 6;
-                case Calendar.SUNDAY:
-                    return 7;
-                default:
-                    return 0;
-            }
-
-        } catch (ParseException e) {
-            return 0;
-        }
-    }
 }

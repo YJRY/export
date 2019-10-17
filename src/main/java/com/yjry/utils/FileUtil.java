@@ -112,7 +112,7 @@ public class FileUtil {
                             field.setAccessible(true);
                             String typeName = field.getGenericType().getTypeName();
                             if (typeName.equals(Date.class.getTypeName())) {
-                                out.write(field.get(object) == null ? "," : "\"" + SimpleDateFormatUtil.formatDate((Date) field.get(object)) + "\t\",");
+                                out.write(field.get(object) == null ? "," : "\"" + SimpleDateFormatUtil.getDateTimeString((Date) field.get(object)) + "\t\",");
                             } else if (typeName.equals(String.class.getTypeName())) {
                                 String newFieldValue = handleString((String) field.get(object));
                                 out.write(newFieldValue == null ? "," : newFieldValue + ",");
@@ -228,7 +228,7 @@ public class FileUtil {
                 case NUMERIC:
                     //若为日期格式
                     if (DateUtil.isCellDateFormatted(cell)) {
-                        cellValue = SimpleDateFormatUtil.formatDate(cell.getDateCellValue());
+                        cellValue = SimpleDateFormatUtil.getDateTimeString(cell.getDateCellValue());
                     } else {
                         BigDecimal decimalCellValue = new BigDecimal(cell.getNumericCellValue());
                         cellValue = decimalCellValue.toString();
@@ -356,7 +356,7 @@ public class FileUtil {
             if (this.getFailCount() > 0) {
                 this.setStatus(1);
             } else {
-                this.resultId = new SnowFlakeIdUtil(8, 8).nextId();//解析结果id
+                this.resultId = SnowFlakeIdUtil.nextId();//解析结果id
             }
         }
 
