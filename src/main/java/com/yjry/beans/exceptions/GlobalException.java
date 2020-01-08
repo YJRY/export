@@ -1,4 +1,4 @@
-package com.yjry.bean.exception;
+package com.yjry.beans.exceptions;
 /**
  * 全局异常
  * @author xuqi

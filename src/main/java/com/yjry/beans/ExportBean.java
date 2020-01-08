@@ -1,4 +1,4 @@
-package com.yjry.bean;
+package com.yjry.beans;
 
 import com.alibaba.fastjson.JSONObject;
 

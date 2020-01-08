@@ -7,6 +7,12 @@
     <groupId>com.yjry</groupId>
     <artifactId>export</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <dependencies>
 
         <!-- 集合工具类 -->
@@ -69,17 +75,23 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- mybatis分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
+        </dependency>
 
 
     </dependencies>
     <distributionManagement>
         <repository>
-            <id>nexus-release</id>
-            <url>http://localhost:8081/repository/maven-releases/</url>
+            <id>zed-releases</id>
+            <url>http://192.168.7.250:8081/repository/zedReleases/</url>
         </repository>
         <snapshotRepository>
-            <id>nexus-snapshot</id>
-            <url>http://localhost:8081/repository/maven-snapshots/</url>
+            <id>zed-snapshots</id>
+            <url>http://192.168.7.250:8081/repository/zedSnapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
